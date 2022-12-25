@@ -28,14 +28,12 @@ async def process_client_request(reader, writer):
             "-------------------------------\n")
     
     validation_response = await validation_server_request(decoded_client_request)
+    validation_response_type = validation_response.split()[0]
+    if validation_response_type in ("НИНАШОЛ", "НИПОНЯЛ", "НИЛЬЗЯ"):
+        response_to_client = validation_response
+    else:
+        response_to_client = f"НОРМАЛДЫКС {PROTOCOL}\r\n{choice(PHONES)}\r\n\r\n"
 
-
-    # response_type = choice(RESPONSES)
-    # response_to_client = f"{response_type} {PROTOCOL}"
-    # if response_type == "НОРМАЛДЫКС":
-    #     phone = choice(PHONES)
-    #     response_to_client += f"\r\n{phone}"
-    # response_to_client += "\r\n\r\n"
 
     print(
             "-------------------------------\n" \
@@ -44,8 +42,8 @@ async def process_client_request(reader, writer):
             f"DECODED:{response_to_client.strip()}\n" \
             "-------------------------------\n")
     
-    # writer.write(response_to_client.encode(ENCODING))
-    # await writer.drain()
+    writer.write(response_to_client.encode(ENCODING))
+    await writer.drain()
 
     print("Close the connection")
     writer.close()
@@ -62,9 +60,4 @@ async def main():
         await server.serve_forever()
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        print("\nKeyboard Interrupt: Server shutdown!")
-    except Exception as e:
-        print(e)
+    asyncio.run(main())

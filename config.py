@@ -3,5 +3,5 @@ ENCODING = "UTF-8"
 VALIDATION_SERVER_URL = "vragi-vezde.to.digital"
 VALIDATION_SERVER_PORT = 51624 
 PHONES_LIMIT = 5
-RESPONSES = ("НОРМАЛДЫКС", "НИНАШОЛ", "НИЛЬЗЯ")
+RESPONSES = ("МОЖНА", "НИНАШОЛ", "НИЛЬЗЯ", "НИПОНЯЛ")
 PHONES = ("02", "112", "89118345343")

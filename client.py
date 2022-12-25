@@ -5,17 +5,10 @@ from config import ENCODING, PROTOCOL, PHONES_LIMIT
 
 
 async def main():
-    try:
-        _, address, port, *_ = sys.argv
-    except Exception:
-        raise Exception("Не введен адрес и порт")
+    _, address, port, *_ = sys.argv
     port = int(port)
     verb = input("Enter request type:\n")
-    if verb not in ("ОТДОВАЙ", "ЗОПИШИ", "УДОЛИ"):
-        raise Exception("Undefined method")
     name = input("Enter the name:\n")
-    if not name:
-        raise Exception("Name is not entered")
     message = " ".join((verb, name, PROTOCOL))
     if verb == "ЗОПИШИ":
         phones = []
@@ -39,12 +32,14 @@ async def main():
     writer.write(message_encoded)
     await writer.drain()
 
-    response = b""
-    while True:
-        line = await reader.readline()
-        response += line
-        if response.endswith(b"\r\n\r\n") or not line:
-            break
+    response = await reader.readuntil(b"\r\n\r\n")
+
+    # response = b""
+    # while True:
+    #     line = await reader.readline()
+    #     response += line
+    #     if response.endswith(b"\r\n\r\n") or not line:
+    #         break
 
     decoded_response = response.decode(ENCODING)
     addr = writer.get_extra_info("peername")
@@ -59,7 +54,4 @@ async def main():
     await writer.wait_closed()
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except Exception as err:
-        print(err)
+    asyncio.run(main())
